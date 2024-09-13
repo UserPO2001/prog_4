@@ -7,11 +7,11 @@ class LingoApp(tk.Tk):
         super().__init__()
 
         self.title("Lingo Grid")
-        self.geometry("400x600")  # Adjusted height to accommodate bottom frame
+        self.geometry("400x600")  
 
         # The correct word to guess
         self.correct_word = get_random_word()
-        self.current_row = 0  # To track the current row for guesses
+        self.current_row = 0  
 
         # Create the top padding frame
         self.top_frame = tk.Frame(self, height=100, bg="lightgray")
@@ -26,8 +26,8 @@ class LingoApp(tk.Tk):
         self.grid_frame = tk.Frame(self)
         self.grid_frame.grid(row=1, column=0, padx=2, pady=2, sticky="nsew")  # Place the grid frame
 
-        # Configure the rows and columns to expand
-        for i in range(5):  # 5 rows for guesses
+       
+        for i in range(5):  
             self.grid_frame.grid_rowconfigure(i, weight=1)
             self.grid_frame.grid_columnconfigure(i, weight=1)
 
