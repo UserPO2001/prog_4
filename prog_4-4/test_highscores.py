@@ -10,5 +10,5 @@ scores = Highscores()
 # cursor.execute("DROP TABLE highscores; ")
 # connection.close()
 
-# test adding of scores
-scores.add_score("Peter", 100)
+# # test adding of scores
+# scores.add_score("Peter", 100)

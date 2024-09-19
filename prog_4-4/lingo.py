@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import sqlite3
 import random
 
@@ -39,8 +39,14 @@ class LingoApp(tk.Tk):
 
         # Add a start button to submit the name
         self.start_button = tk.Button(self.top_frame, text="Start", font=("Helvetica", 12),
-                                      bg="blue", fg="white", command=self.start_game)
+                                       fg="blue", command=self.start_game)
         self.start_button.pack(pady=5)
+
+        # Add a button to view highscores with a blue background
+        self.highscores_button = tk.Button(self.top_frame, text="Highscores", font=("Helvetica", 12),
+                                  fg="blue", command=self.show_highscores)
+        self.highscores_button.pack(pady=5)
+
 
         # Create the grid frame (hidden until the player starts the game)
         self.grid_frame = tk.Frame(self)
@@ -70,7 +76,7 @@ class LingoApp(tk.Tk):
 
         # Add a submit button to the bottom frame
         self.submit_button = tk.Button(self.bottom_frame, text="Submit", font=("Helvetica", 12),
-                                       bg="blue", fg="white", width=10, command=self.check_guess)
+                                        fg="blue", width=10, command=self.check_guess)
         self.submit_button.pack(pady=10)  # Center the button with padding
 
         # Adjust the weight of the rows and columns to fill the window
@@ -150,11 +156,10 @@ class LingoApp(tk.Tk):
             if not correct_positions[i] and guess[i] in self.correct_word:
                 if guess[i] in correct_letter_count and correct_letter_count[guess[i]] > 0:
                     correct_letter_count[guess[i]] -= 1
-                    self.entries[self.current_row][i].config(bg="yellow")  # Turn misplaced letters yellow
-                else:
-                    self.entries[self.current_row][i].config(bg="gray")  # Optional: turn incorrect letters gray
+                    self.entries[self.current_row][i].config(bg="orange")  # Turn misplaced letters orange
+              
 
-        # Move correct letters to the next row, leave yellow letters in place
+        # Move correct letters to the next row, leave orange letters in place
         if guess == self.correct_word:
             messagebox.showinfo("Result", "Correct!")
             self.save_score()  # Save the score when the correct word is guessed
@@ -181,6 +186,33 @@ class LingoApp(tk.Tk):
         """
         # Save the score in the highscores table with the player's name
         self.highscores.add_score(self.player_name, self.beurt)
+
+        messagebox.showinfo("Result", f"Correct! You guessed it in {self.beurt} turns.")
+
+    def show_highscores(self):
+        """
+        Opens a new window to display the highscores from the database.
+        """
+        # Create a new top-level window for highscores
+        highscores_window = tk.Toplevel(self)
+        highscores_window.title("Highscores")
+        highscores_window.geometry("300x400")
+
+        # Create a Treeview widget to display the highscores in a table
+        columns = ("Name", "Turns")
+        tree = ttk.Treeview(highscores_window, columns=columns, show="headings")
+        tree.heading("Name", text="Name")
+        tree.heading("Turns", text="Turns")
+        tree.pack(expand=True, fill="both")
+
+        # Fetch the highscores from the database and insert into the table
+        highscores = self.highscores.get_highscores()
+        for score in highscores:
+            tree.insert("", "end", values=score)
+
+        # Add a close button
+        close_button = tk.Button(highscores_window, text="Close", command=highscores_window.destroy)
+        close_button.pack(pady=10)
 
 if __name__ == "__main__":
     app = LingoApp()
